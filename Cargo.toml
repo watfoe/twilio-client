@@ -1,0 +1,39 @@
+[package]
+name = "twilio-client"
+description = "A twilio sms and verify clients in rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jimmie Lovell <jimmieomlovell@gmail.com>"]
+license = "MIT"
+homepage = "https://github.com/jimmielovell/ruts"
+keywords = ["twilio", "sms", "client", "watfoe"]
+categories = ["network-programming"]
+repository = "https://github.com/jimmielovell/twilio-client"
+readme = "README.md"
+
+[dependencies]
+phonenumber = "0.3.7+8.13.52"
+secrecy = "0.10.3"
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = "1.0.138"
+reqwest = { version = "0.12.12", features = ["json"] }
+thiserror = "2.0.11"
+tokio = { version = "1.43.0", features = ["full"]}
+tracing = { version = "0.1.41", features = ["log"] }
+url = "2.5.4"
+
+[dev-dependencies]
+claim = "0.5.0"
+fake = "3.0.1"
+quickcheck = "1.0.3"
+quickcheck_macros = "1.0.0"
+serde_urlencoded = "0.7.1"
+wiremock = "0.6.0"
+
+[[test]]
+name = "sms"
+path = "tests/sms.rs"
+
+[[test]]
+name = "verify"
+path = "tests/verify.rs"
