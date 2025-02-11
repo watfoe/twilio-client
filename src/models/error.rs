@@ -1,7 +1,4 @@
-use std::error;
-
 use serde_json;
-
 use reqwest::StatusCode;
 
 #[derive(Debug, thiserror::Error)]

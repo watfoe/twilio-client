@@ -2,13 +2,11 @@ use std::collections::HashMap;
 use std::time::Duration;
 
 use crate::error::ClientError;
-use crate::sms::SendSmsResponse;
-use crate::Phone;
 use reqwest::Url;
 use secrecy::{ExposeSecret, SecretString};
-use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
 
-pub(crate) async fn make_request<T>(
+pub(crate) async fn make_request<T: DeserializeOwned>(
     http_client: &reqwest::Client,
     urls: (&Url, &str),
     account_sid: &SecretString,
@@ -58,8 +56,4 @@ pub(crate) async fn make_request<T>(
             message,
         })
     }
-}
-
-fn urlencode_from_string<T: AsRef<str>>(s: T) -> String {
-    url::form_urlencoded::byte_serialize(s.as_ref().as_bytes()).collect()
 }

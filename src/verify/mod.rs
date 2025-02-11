@@ -1,12 +1,12 @@
 use std::time::Duration;
 
 use crate::error::ClientError;
-use crate::models::{Phone};
+use crate::make_request::make_request;
+use crate::models::Phone;
 use crate::sms::DEFAULT_TIMEOUT;
 use reqwest::Url;
 use secrecy::{ExposeSecret, SecretString};
 use serde::{Deserialize, Serialize};
-use crate::make_request::make_request;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TwilioRequestResponse {
@@ -43,7 +43,7 @@ pub struct TwilioVerifyResponse {
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Channel {
-    Sms
+    Sms,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
@@ -157,7 +157,7 @@ impl Client {
             &body,
             "Twilio SMS",
         )
-            .await
+        .await
     }
 
     #[tracing::instrument(name = "Twilio Verify: Verify OTP", skip(self, to, code))]
@@ -182,6 +182,6 @@ impl Client {
             &body,
             "Twilio Verify",
         )
-            .await
+        .await
     }
 }

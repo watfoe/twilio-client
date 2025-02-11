@@ -135,7 +135,10 @@ impl Client {
         ClientBuilder::new()
     }
 
-    #[tracing::instrument(name = "Twilio SMS: Send sms", skip(self, body))]
+    #[tracing::instrument(
+        name = "Twilio SMS: Send sms",
+        skip(self, to, content, send_as_mms, media_url)
+    )]
     pub async fn send(
         &self,
         to: &Phone,

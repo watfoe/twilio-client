@@ -5,10 +5,11 @@ mod tests {
     use fake::{Fake, Faker};
     use reqwest::Url;
     use secrecy::{ExposeSecret, SecretString};
+    use serde::Serialize;
+    use twilio_client::verify::Client;
+    use twilio_client::Phone;
     use wiremock::matchers::{any, header, method, path};
     use wiremock::{Mock, MockServer, Request, ResponseTemplate};
-    use twilio_client::Phone;
-    use twilio_client::verify::Client;
 
     fn generate_phone() -> (String, String) {
         (String::from("0700123456"), String::from("KE"))
@@ -27,18 +28,21 @@ mod tests {
 
     fn twilio_verify_client(base_url: &str) -> (Client, SecretString) {
         let base_url = Url::parse(base_url).expect("Failed to parse base uri");
-        let account_sid = SecretString::from(Faker.fake());
-        let auth_token = SecretString::from(Faker.fake());
-        let service_sid = SecretString::from(Faker.fake());
+        let account_sid = SecretString::from(Faker.fake::<String>());
+        let auth_token = SecretString::from(Faker.fake::<String>());
+        let service_sid = SecretString::from(Faker.fake::<String>());
 
-        (Client::builder()
-            .base_url(base_url)
-            .service_sid(service_sid.clone())
-            .account_sid(account_sid.clone())
-            .auth_token(auth_token)
-            .timeout(std::time::Duration::from_secs(1))
-            .build()
-            .unwrap(), service_sid)
+        (
+            Client::builder()
+                .base_url(base_url)
+                .service_sid(service_sid.clone())
+                .account_sid(account_sid.clone())
+                .auth_token(auth_token)
+                .timeout(std::time::Duration::from_secs(1))
+                .build()
+                .unwrap(),
+            service_sid,
+        )
     }
 
     #[tokio::test]
@@ -111,7 +115,14 @@ mod tests {
         assert_err!(outcome);
     }
 
+    #[derive(Serialize)]
     struct RequestTwilioVerifyBodyMatcher;
+
+    impl RequestTwilioVerifyBodyMatcher {
+        fn new() -> Self {
+            Self
+        }
+    }
 
     impl wiremock::Match for RequestTwilioVerifyBodyMatcher {
         fn matches(&self, request: &Request) -> bool {

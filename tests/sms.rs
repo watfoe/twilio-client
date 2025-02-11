@@ -29,7 +29,7 @@ mod tests {
         let base_url = Url::parse(base_url).expect("Failed to parse base uri");
         let auth_token = 13.fake::<String>();
         let auth_token = SecretString::from(auth_token);
-        let account_sid = SecretString::from(Faker.fake());
+        let account_sid = SecretString::from(Faker.fake::<String>());
 
         (
             Client::builder()
@@ -70,7 +70,7 @@ mod tests {
     #[tokio::test]
     async fn send_sms_succeeds_if_the_server_returns_200() {
         let mock_server = MockServer::start().await;
-        let (sms_client, account_sid) = sms_client(&mock_server.uri());
+        let (sms_client, _) = sms_client(&mock_server.uri());
         let template = ResponseTemplate::new(200).set_body_json(SendSmsResponse::default());
 
         Mock::given(any())
@@ -89,7 +89,7 @@ mod tests {
     #[tokio::test]
     async fn send_sms_fails_if_the_server_returns_500() {
         let mock_server = MockServer::start().await;
-        let (sms_client, account_sid) = sms_client(&mock_server.uri());
+        let (sms_client, _) = sms_client(&mock_server.uri());
 
         Mock::given(any())
             .respond_with(ResponseTemplate::new(500))
@@ -107,7 +107,7 @@ mod tests {
     #[tokio::test]
     async fn send_sms_times_out_if_the_server_takes_too_long() {
         let mock_server = MockServer::start().await;
-        let (sms_client, account_sid) = sms_client(&mock_server.uri());
+        let (sms_client, _) = sms_client(&mock_server.uri());
 
         let response = ResponseTemplate::new(200).set_delay(std::time::Duration::from_secs(180));
 

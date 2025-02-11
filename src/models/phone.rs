@@ -101,7 +101,7 @@ mod tests {
     }
 
     fn generate_phone() -> (String, String) {
-        let num = (0..8).fake::<u64>();
+        let num = (1..9).fake::<u64>();
         let number = format!("+2547{num}");
 
         (number, "KE".to_string())
