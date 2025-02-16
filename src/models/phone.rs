@@ -3,7 +3,7 @@ use std::str::FromStr;
 use crate::error::ParseError;
 use phonenumber::country::Id;
 use phonenumber::{Mode, PhoneNumber};
-use serde::{Deserialize, Serialize};
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RawPhone {
@@ -11,7 +11,7 @@ pub struct RawPhone {
     pub country_code: String,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct Phone {
     phone_number: PhoneNumber,
 }
@@ -75,6 +75,32 @@ impl Phone {
 impl PartialEq<Phone> for Phone {
     fn eq(&self, other: &Phone) -> bool {
         self.e164_number() == other.e164_number()
+    }
+}
+
+impl Serialize for Phone {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let raw_phone = RawPhone {
+            number: self.e164_number(),
+            country_code: self.country_iso(),
+        };
+        raw_phone.serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for Phone {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // Deserialize into RawPhone
+        let raw_phone = RawPhone::deserialize(deserializer)?;
+
+        // Parse the RawPhone into a Phone
+        Phone::parse(&raw_phone.number, &raw_phone.country_code).map_err(de::Error::custom)
     }
 }
 

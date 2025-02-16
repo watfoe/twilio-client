@@ -1,5 +1,5 @@
-use serde_json;
 use reqwest::StatusCode;
+use serde_json;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ClientError {
