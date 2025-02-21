@@ -12,6 +12,7 @@ repository = "https://github.com/jimmielovell/twilio-client"
 readme = "README.md"
 
 [dependencies]
+blake3 = "1.6.0"
 phonenumber = "0.3.7+8.13.52"
 secrecy = "0.10.3"
 serde = { version = "1.0.217", features = ["derive"] }

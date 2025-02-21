@@ -62,6 +62,12 @@ impl Phone {
         self.phone_number.format().mode(Mode::E164).to_string()
     }
 
+    pub fn hash(&self) -> String {
+        let mut hasher = blake3::Hasher::new();
+        hasher.update(self.e164_number().as_bytes());
+        hasher.finalize().to_string()
+    }
+
     pub fn country_iso(&self) -> String {
         self.phone_number
             .country()
